@@ -11,15 +11,29 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { StringFilter } from "../../util/StringFilter";
+import { BillListRelationFilter } from "../../bill/base/BillListRelationFilter";
+import { ValidateNested, IsOptional } from "class-validator";
 import { Type } from "class-transformer";
-import { IsOptional, ValidateNested } from "class-validator";
-import { BooleanNullableFilter } from "../../util/BooleanNullableFilter";
-import { StringNullableFilter } from "../../util/StringNullableFilter";
+import { StringFilter } from "../../util/StringFilter";
+import { BooleanFilter } from "../../util/BooleanFilter";
 import { PropertyWhereUniqueInput } from "../../property/base/PropertyWhereUniqueInput";
+import { RentListRelationFilter } from "../../rent/base/RentListRelationFilter";
+import { TenantListRelationFilter } from "../../tenant/base/TenantListRelationFilter";
 
 @InputType()
 class NestWhereInput {
+  @ApiProperty({
+    required: false,
+    type: () => BillListRelationFilter,
+  })
+  @ValidateNested()
+  @Type(() => BillListRelationFilter)
+  @IsOptional()
+  @Field(() => BillListRelationFilter, {
+    nullable: true,
+  })
+  bills?: BillListRelationFilter;
+
   @ApiProperty({
     required: false,
     type: StringFilter,
@@ -33,36 +47,36 @@ class NestWhereInput {
 
   @ApiProperty({
     required: false,
-    type: BooleanNullableFilter,
+    type: BooleanFilter,
   })
-  @Type(() => BooleanNullableFilter)
+  @Type(() => BooleanFilter)
   @IsOptional()
-  @Field(() => BooleanNullableFilter, {
+  @Field(() => BooleanFilter, {
     nullable: true,
   })
-  isOccupied?: BooleanNullableFilter;
+  isOccupied?: BooleanFilter;
 
   @ApiProperty({
     required: false,
-    type: BooleanNullableFilter,
+    type: BooleanFilter,
   })
-  @Type(() => BooleanNullableFilter)
+  @Type(() => BooleanFilter)
   @IsOptional()
-  @Field(() => BooleanNullableFilter, {
+  @Field(() => BooleanFilter, {
     nullable: true,
   })
-  isUnit?: BooleanNullableFilter;
+  isUnit?: BooleanFilter;
 
   @ApiProperty({
     required: false,
-    type: StringNullableFilter,
+    type: StringFilter,
   })
-  @Type(() => StringNullableFilter)
+  @Type(() => StringFilter)
   @IsOptional()
-  @Field(() => StringNullableFilter, {
+  @Field(() => StringFilter, {
     nullable: true,
   })
-  name?: StringNullableFilter;
+  name?: StringFilter;
 
   @ApiProperty({
     required: false,
@@ -75,6 +89,30 @@ class NestWhereInput {
     nullable: true,
   })
   propertyId?: PropertyWhereUniqueInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => RentListRelationFilter,
+  })
+  @ValidateNested()
+  @Type(() => RentListRelationFilter)
+  @IsOptional()
+  @Field(() => RentListRelationFilter, {
+    nullable: true,
+  })
+  rents?: RentListRelationFilter;
+
+  @ApiProperty({
+    required: false,
+    type: () => TenantListRelationFilter,
+  })
+  @ValidateNested()
+  @Type(() => TenantListRelationFilter)
+  @IsOptional()
+  @Field(() => TenantListRelationFilter, {
+    nullable: true,
+  })
+  tenants?: TenantListRelationFilter;
 }
 
 export { NestWhereInput as NestWhereInput };

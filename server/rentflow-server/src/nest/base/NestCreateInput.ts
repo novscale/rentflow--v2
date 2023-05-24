@@ -11,61 +11,88 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
+import { BillCreateNestedManyWithoutNestsInput } from "./BillCreateNestedManyWithoutNestsInput";
 import {
-  IsBoolean,
-  IsOptional,
-  IsString,
   ValidateNested,
+  IsOptional,
+  IsBoolean,
+  IsString,
 } from "class-validator";
-import { PropertyWhereUniqueInput } from "../../property/base/PropertyWhereUniqueInput";
 import { Type } from "class-transformer";
+import { PropertyWhereUniqueInput } from "../../property/base/PropertyWhereUniqueInput";
+import { RentCreateNestedManyWithoutNestsInput } from "./RentCreateNestedManyWithoutNestsInput";
+import { TenantCreateNestedManyWithoutNestsInput } from "./TenantCreateNestedManyWithoutNestsInput";
 
 @InputType()
 class NestCreateInput {
   @ApiProperty({
     required: false,
+    type: () => BillCreateNestedManyWithoutNestsInput,
+  })
+  @ValidateNested()
+  @Type(() => BillCreateNestedManyWithoutNestsInput)
+  @IsOptional()
+  @Field(() => BillCreateNestedManyWithoutNestsInput, {
+    nullable: true,
+  })
+  bills?: BillCreateNestedManyWithoutNestsInput;
+
+  @ApiProperty({
+    required: true,
     type: Boolean,
   })
   @IsBoolean()
-  @IsOptional()
-  @Field(() => Boolean, {
-    nullable: true,
-  })
-  isOccupied?: boolean | null;
+  @Field(() => Boolean)
+  isOccupied!: boolean;
 
   @ApiProperty({
-    required: false,
+    required: true,
     type: Boolean,
   })
   @IsBoolean()
-  @IsOptional()
-  @Field(() => Boolean, {
-    nullable: true,
-  })
-  isUnit?: boolean | null;
+  @Field(() => Boolean)
+  isUnit!: boolean;
 
   @ApiProperty({
-    required: false,
+    required: true,
     type: String,
   })
   @IsString()
-  @IsOptional()
-  @Field(() => String, {
-    nullable: true,
-  })
-  name?: string | null;
+  @Field(() => String)
+  name!: string;
 
   @ApiProperty({
-    required: false,
+    required: true,
     type: () => PropertyWhereUniqueInput,
   })
   @ValidateNested()
   @Type(() => PropertyWhereUniqueInput)
+  @Field(() => PropertyWhereUniqueInput)
+  propertyId!: PropertyWhereUniqueInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => RentCreateNestedManyWithoutNestsInput,
+  })
+  @ValidateNested()
+  @Type(() => RentCreateNestedManyWithoutNestsInput)
   @IsOptional()
-  @Field(() => PropertyWhereUniqueInput, {
+  @Field(() => RentCreateNestedManyWithoutNestsInput, {
     nullable: true,
   })
-  propertyId?: PropertyWhereUniqueInput | null;
+  rents?: RentCreateNestedManyWithoutNestsInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => TenantCreateNestedManyWithoutNestsInput,
+  })
+  @ValidateNested()
+  @Type(() => TenantCreateNestedManyWithoutNestsInput)
+  @IsOptional()
+  @Field(() => TenantCreateNestedManyWithoutNestsInput, {
+    nullable: true,
+  })
+  tenants?: TenantCreateNestedManyWithoutNestsInput;
 }
 
 export { NestCreateInput as NestCreateInput };

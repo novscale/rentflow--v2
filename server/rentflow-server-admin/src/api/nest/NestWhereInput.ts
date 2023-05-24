@@ -1,12 +1,17 @@
+import { BillListRelationFilter } from "../bill/BillListRelationFilter";
 import { StringFilter } from "../../util/StringFilter";
-import { BooleanNullableFilter } from "../../util/BooleanNullableFilter";
-import { StringNullableFilter } from "../../util/StringNullableFilter";
+import { BooleanFilter } from "../../util/BooleanFilter";
 import { PropertyWhereUniqueInput } from "../property/PropertyWhereUniqueInput";
+import { RentListRelationFilter } from "../rent/RentListRelationFilter";
+import { TenantListRelationFilter } from "../tenant/TenantListRelationFilter";
 
 export type NestWhereInput = {
+  bills?: BillListRelationFilter;
   id?: StringFilter;
-  isOccupied?: BooleanNullableFilter;
-  isUnit?: BooleanNullableFilter;
-  name?: StringNullableFilter;
+  isOccupied?: BooleanFilter;
+  isUnit?: BooleanFilter;
+  name?: StringFilter;
   propertyId?: PropertyWhereUniqueInput;
+  rents?: RentListRelationFilter;
+  tenants?: TenantListRelationFilter;
 };

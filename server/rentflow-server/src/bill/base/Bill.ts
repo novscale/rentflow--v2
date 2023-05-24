@@ -11,11 +11,67 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { ObjectType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsDate } from "class-validator";
+import {
+  IsNumber,
+  IsEnum,
+  IsDate,
+  IsString,
+  IsOptional,
+  ValidateNested,
+} from "class-validator";
+import { EnumBillCategory } from "./EnumBillCategory";
 import { Type } from "class-transformer";
+import { Nest } from "../../nest/base/Nest";
 
 @ObjectType()
 class Bill {
+  @ApiProperty({
+    required: true,
+    type: Number,
+  })
+  @IsNumber()
+  @Field(() => Number)
+  amount!: number;
+
+  @ApiProperty({
+    required: true,
+    enum: EnumBillCategory,
+  })
+  @IsEnum(EnumBillCategory)
+  @Field(() => EnumBillCategory, {
+    nullable: true,
+  })
+  category?:
+    | "Electricity"
+    | "Gas"
+    | "Insurance"
+    | "Maintenance"
+    | "Mortgage"
+    | "PropertyTax"
+    | "Water"
+    | "Repairs"
+    | "Ltb"
+    | "Other";
+
+  @ApiProperty({
+    required: true,
+  })
+  @IsDate()
+  @Type(() => Date)
+  @Field(() => Date)
+  date!: Date;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  description!: string | null;
+
   @ApiProperty({
     required: true,
     type: String,
@@ -23,6 +79,22 @@ class Bill {
   @IsString()
   @Field(() => String)
   id!: string;
+
+  @ApiProperty({
+    required: true,
+    type: String,
+  })
+  @IsString()
+  @Field(() => String)
+  name!: string;
+
+  @ApiProperty({
+    required: true,
+    type: () => Nest,
+  })
+  @ValidateNested()
+  @Type(() => Nest)
+  nestId?: Nest;
 
   @ApiProperty({
     required: true,

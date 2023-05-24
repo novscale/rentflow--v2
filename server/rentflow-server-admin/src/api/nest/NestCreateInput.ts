@@ -1,8 +1,14 @@
+import { BillCreateNestedManyWithoutNestsInput } from "./BillCreateNestedManyWithoutNestsInput";
 import { PropertyWhereUniqueInput } from "../property/PropertyWhereUniqueInput";
+import { RentCreateNestedManyWithoutNestsInput } from "./RentCreateNestedManyWithoutNestsInput";
+import { TenantCreateNestedManyWithoutNestsInput } from "./TenantCreateNestedManyWithoutNestsInput";
 
 export type NestCreateInput = {
-  isOccupied?: boolean | null;
-  isUnit?: boolean | null;
-  name?: string | null;
-  propertyId?: PropertyWhereUniqueInput | null;
+  bills?: BillCreateNestedManyWithoutNestsInput;
+  isOccupied: boolean;
+  isUnit: boolean;
+  name: string;
+  propertyId: PropertyWhereUniqueInput;
+  rents?: RentCreateNestedManyWithoutNestsInput;
+  tenants?: TenantCreateNestedManyWithoutNestsInput;
 };

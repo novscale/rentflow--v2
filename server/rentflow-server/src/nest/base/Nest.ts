@@ -11,18 +11,30 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { ObjectType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
+import { Bill } from "../../bill/base/Bill";
 import {
+  ValidateNested,
+  IsOptional,
   IsString,
   IsBoolean,
-  IsOptional,
-  ValidateNested,
   IsDate,
 } from "class-validator";
-import { Property } from "../../property/base/Property";
 import { Type } from "class-transformer";
+import { Property } from "../../property/base/Property";
+import { Rent } from "../../rent/base/Rent";
+import { Tenant } from "../../tenant/base/Tenant";
 
 @ObjectType()
 class Nest {
+  @ApiProperty({
+    required: false,
+    type: () => [Bill],
+  })
+  @ValidateNested()
+  @Type(() => Bill)
+  @IsOptional()
+  bills?: Array<Bill>;
+
   @ApiProperty({
     required: true,
     type: String,
@@ -32,46 +44,54 @@ class Nest {
   id!: string;
 
   @ApiProperty({
-    required: false,
+    required: true,
     type: Boolean,
   })
   @IsBoolean()
-  @IsOptional()
-  @Field(() => Boolean, {
-    nullable: true,
-  })
-  isOccupied!: boolean | null;
+  @Field(() => Boolean)
+  isOccupied!: boolean;
 
   @ApiProperty({
-    required: false,
+    required: true,
     type: Boolean,
   })
   @IsBoolean()
-  @IsOptional()
-  @Field(() => Boolean, {
-    nullable: true,
-  })
-  isUnit!: boolean | null;
+  @Field(() => Boolean)
+  isUnit!: boolean;
 
   @ApiProperty({
-    required: false,
+    required: true,
     type: String,
   })
   @IsString()
-  @IsOptional()
-  @Field(() => String, {
-    nullable: true,
-  })
-  name!: string | null;
+  @Field(() => String)
+  name!: string;
 
   @ApiProperty({
-    required: false,
+    required: true,
     type: () => Property,
   })
   @ValidateNested()
   @Type(() => Property)
+  propertyId?: Property;
+
+  @ApiProperty({
+    required: false,
+    type: () => [Rent],
+  })
+  @ValidateNested()
+  @Type(() => Rent)
   @IsOptional()
-  propertyId?: Property | null;
+  rents?: Array<Rent>;
+
+  @ApiProperty({
+    required: false,
+    type: () => [Tenant],
+  })
+  @ValidateNested()
+  @Type(() => Tenant)
+  @IsOptional()
+  tenants?: Array<Tenant>;
 
   @ApiProperty({
     required: true,

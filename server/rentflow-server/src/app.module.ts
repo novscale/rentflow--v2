@@ -5,6 +5,8 @@ import { UserModule } from "./user/user.module";
 import { PropertyModule } from "./property/property.module";
 import { NestModule } from "./nest/nest.module";
 import { BillModule } from "./bill/bill.module";
+import { TenantModule } from "./tenant/tenant.module";
+import { RentModule } from "./rent/rent.module";
 import { HealthModule } from "./health/health.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { SecretsManagerModule } from "./providers/secrets/secretsManager.module";
@@ -25,6 +27,8 @@ import { AuthModule } from "./auth/auth.module";
     PropertyModule,
     NestModule,
     BillModule,
+    TenantModule,
+    RentModule,
     HealthModule,
     PrismaModule,
     SecretsManagerModule,

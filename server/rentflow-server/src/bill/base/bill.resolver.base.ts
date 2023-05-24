@@ -18,10 +18,14 @@ import * as gqlACGuard from "../../auth/gqlAC.guard";
 import { GqlDefaultAuthGuard } from "../../auth/gqlDefaultAuth.guard";
 import * as common from "@nestjs/common";
 import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
+import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
+import { CreateBillArgs } from "./CreateBillArgs";
+import { UpdateBillArgs } from "./UpdateBillArgs";
 import { DeleteBillArgs } from "./DeleteBillArgs";
 import { BillFindManyArgs } from "./BillFindManyArgs";
 import { BillFindUniqueArgs } from "./BillFindUniqueArgs";
 import { Bill } from "./Bill";
+import { Nest } from "../../nest/base/Nest";
 import { BillService } from "../bill.service";
 @common.UseGuards(GqlDefaultAuthGuard, gqlACGuard.GqlACGuard)
 @graphql.Resolver(() => Bill)
@@ -76,6 +80,55 @@ export class BillResolverBase {
     return result;
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
+  @graphql.Mutation(() => Bill)
+  @nestAccessControl.UseRoles({
+    resource: "Bill",
+    action: "create",
+    possession: "any",
+  })
+  async createBill(@graphql.Args() args: CreateBillArgs): Promise<Bill> {
+    return await this.service.create({
+      ...args,
+      data: {
+        ...args.data,
+
+        nestId: {
+          connect: args.data.nestId,
+        },
+      },
+    });
+  }
+
+  @common.UseInterceptors(AclValidateRequestInterceptor)
+  @graphql.Mutation(() => Bill)
+  @nestAccessControl.UseRoles({
+    resource: "Bill",
+    action: "update",
+    possession: "any",
+  })
+  async updateBill(@graphql.Args() args: UpdateBillArgs): Promise<Bill | null> {
+    try {
+      return await this.service.update({
+        ...args,
+        data: {
+          ...args.data,
+
+          nestId: {
+            connect: args.data.nestId,
+          },
+        },
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new apollo.ApolloError(
+          `No resource was found for ${JSON.stringify(args.where)}`
+        );
+      }
+      throw error;
+    }
+  }
+
   @graphql.Mutation(() => Bill)
   @nestAccessControl.UseRoles({
     resource: "Bill",
@@ -93,5 +146,26 @@ export class BillResolverBase {
       }
       throw error;
     }
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => Nest, {
+    nullable: true,
+    name: "nestId",
+  })
+  @nestAccessControl.UseRoles({
+    resource: "Nest",
+    action: "read",
+    possession: "any",
+  })
+  async resolveFieldNestId(
+    @graphql.Parent() parent: Bill
+  ): Promise<Nest | null> {
+    const result = await this.service.getNestId(parent.id);
+
+    if (!result) {
+      return null;
+    }
+    return result;
   }
 }
