@@ -1,0 +1,45 @@
+datasource postgres {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  createdAt DateTime @default(now())
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
+
+model Property {
+  city         String
+  country      String
+  id           String   @id @default(cuid())
+  nests        Nest[]
+  postalCode   String
+  streetName   String
+  streetNumber String
+  updatedAt    DateTime @updatedAt
+}
+
+model Nest {
+  id           String    @id @default(cuid())
+  isOccupied   Boolean?
+  isUnit       Boolean?
+  name         String?
+  propertyId   Property? @relation(fields: [propertyIdId], references: [id])
+  propertyIdId String?
+  updatedAt    DateTime  @updatedAt
+}
+
+model Bill {
+  id        String   @id @default(cuid())
+  updatedAt DateTime @updatedAt
+}
