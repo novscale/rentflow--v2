@@ -30,16 +30,63 @@ model Property {
 }
 
 model Nest {
-  id           String    @id @default(cuid())
-  isOccupied   Boolean?
-  isUnit       Boolean?
-  name         String?
-  propertyId   Property? @relation(fields: [propertyIdId], references: [id])
-  propertyIdId String?
-  updatedAt    DateTime  @updatedAt
+  bills        Bill[]
+  id           String   @id @default(cuid())
+  isOccupied   Boolean
+  isUnit       Boolean
+  name         String
+  propertyId   Property @relation(fields: [propertyIdId], references: [id])
+  propertyIdId String
+  rents        Rent[]
+  tenants      Tenant[]
+  updatedAt    DateTime @updatedAt
 }
 
 model Bill {
+  amount      Float
+  category    EnumBillCategory
+  date        DateTime
+  description String?
+  id          String           @id @default(cuid())
+  name        String
+  nestId      Nest             @relation(fields: [nestIdId], references: [id])
+  nestIdId    String
+  updatedAt   DateTime         @updatedAt
+}
+
+model Tenant {
+  email     String?
+  firstname String
   id        String   @id @default(cuid())
+  lastname  String
+  nestId    Nest     @relation(fields: [nestIdId], references: [id])
+  nestIdId  String
+  phone     String?
+  rents     Rent[]
+  sin       String
   updatedAt DateTime @updatedAt
+}
+
+model Rent {
+  amount     Float
+  date       DateTime
+  id         String   @id @default(cuid())
+  nestId     Nest     @relation(fields: [nestIdId], references: [id])
+  nestIdId   String
+  tenantId   Tenant   @relation(fields: [tenantIdId], references: [id])
+  tenantIdId String
+  updatedAt  DateTime @updatedAt
+}
+
+enum EnumBillCategory {
+  Electricity
+  Gas
+  Insurance
+  Maintenance
+  Mortgage
+  PropertyTax
+  Water
+  Repairs
+  Ltb
+  Other
 }

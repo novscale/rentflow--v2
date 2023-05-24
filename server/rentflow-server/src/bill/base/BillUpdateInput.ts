@@ -9,5 +9,98 @@ https://docs.amplication.com/how-to/custom-code
 
 ------------------------------------------------------------------------------
   */
-class BillUpdateInput {}
+import { InputType, Field } from "@nestjs/graphql";
+import { ApiProperty } from "@nestjs/swagger";
+import {
+  IsNumber,
+  IsOptional,
+  IsEnum,
+  IsDate,
+  IsString,
+  ValidateNested,
+} from "class-validator";
+import { EnumBillCategory } from "./EnumBillCategory";
+import { Type } from "class-transformer";
+import { NestWhereUniqueInput } from "../../nest/base/NestWhereUniqueInput";
+
+@InputType()
+class BillUpdateInput {
+  @ApiProperty({
+    required: false,
+    type: Number,
+  })
+  @IsNumber()
+  @IsOptional()
+  @Field(() => Number, {
+    nullable: true,
+  })
+  amount?: number;
+
+  @ApiProperty({
+    required: false,
+    enum: EnumBillCategory,
+  })
+  @IsEnum(EnumBillCategory)
+  @IsOptional()
+  @Field(() => EnumBillCategory, {
+    nullable: true,
+  })
+  category?:
+    | "Electricity"
+    | "Gas"
+    | "Insurance"
+    | "Maintenance"
+    | "Mortgage"
+    | "PropertyTax"
+    | "Water"
+    | "Repairs"
+    | "Ltb"
+    | "Other";
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsDate()
+  @Type(() => Date)
+  @IsOptional()
+  @Field(() => Date, {
+    nullable: true,
+  })
+  date?: Date;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  description?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  name?: string;
+
+  @ApiProperty({
+    required: false,
+    type: () => NestWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => NestWhereUniqueInput)
+  @IsOptional()
+  @Field(() => NestWhereUniqueInput, {
+    nullable: true,
+  })
+  nestId?: NestWhereUniqueInput;
+}
+
 export { BillUpdateInput as BillUpdateInput };

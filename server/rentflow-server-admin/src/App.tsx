@@ -21,6 +21,14 @@ import { BillList } from "./bill/BillList";
 import { BillCreate } from "./bill/BillCreate";
 import { BillEdit } from "./bill/BillEdit";
 import { BillShow } from "./bill/BillShow";
+import { TenantList } from "./tenant/TenantList";
+import { TenantCreate } from "./tenant/TenantCreate";
+import { TenantEdit } from "./tenant/TenantEdit";
+import { TenantShow } from "./tenant/TenantShow";
+import { RentList } from "./rent/RentList";
+import { RentCreate } from "./rent/RentCreate";
+import { RentEdit } from "./rent/RentEdit";
+import { RentShow } from "./rent/RentShow";
 import { jwtAuthProvider } from "./auth-provider/ra-auth-jwt";
 
 const App = (): React.ReactElement => {
@@ -74,6 +82,20 @@ const App = (): React.ReactElement => {
           edit={BillEdit}
           create={BillCreate}
           show={BillShow}
+        />
+        <Resource
+          name="Tenant"
+          list={TenantList}
+          edit={TenantEdit}
+          create={TenantCreate}
+          show={TenantShow}
+        />
+        <Resource
+          name="Rent"
+          list={RentList}
+          edit={RentEdit}
+          create={RentCreate}
+          show={RentShow}
         />
       </Admin>
     </div>

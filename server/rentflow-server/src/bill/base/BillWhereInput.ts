@@ -11,12 +11,71 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { StringFilter } from "../../util/StringFilter";
+import { FloatFilter } from "../../util/FloatFilter";
 import { Type } from "class-transformer";
-import { IsOptional } from "class-validator";
+import { IsOptional, IsEnum, ValidateNested } from "class-validator";
+import { EnumBillCategory } from "./EnumBillCategory";
+import { DateTimeFilter } from "../../util/DateTimeFilter";
+import { StringNullableFilter } from "../../util/StringNullableFilter";
+import { StringFilter } from "../../util/StringFilter";
+import { NestWhereUniqueInput } from "../../nest/base/NestWhereUniqueInput";
 
 @InputType()
 class BillWhereInput {
+  @ApiProperty({
+    required: false,
+    type: FloatFilter,
+  })
+  @Type(() => FloatFilter)
+  @IsOptional()
+  @Field(() => FloatFilter, {
+    nullable: true,
+  })
+  amount?: FloatFilter;
+
+  @ApiProperty({
+    required: false,
+    enum: EnumBillCategory,
+  })
+  @IsEnum(EnumBillCategory)
+  @IsOptional()
+  @Field(() => EnumBillCategory, {
+    nullable: true,
+  })
+  category?:
+    | "Electricity"
+    | "Gas"
+    | "Insurance"
+    | "Maintenance"
+    | "Mortgage"
+    | "PropertyTax"
+    | "Water"
+    | "Repairs"
+    | "Ltb"
+    | "Other";
+
+  @ApiProperty({
+    required: false,
+    type: DateTimeFilter,
+  })
+  @Type(() => DateTimeFilter)
+  @IsOptional()
+  @Field(() => DateTimeFilter, {
+    nullable: true,
+  })
+  date?: DateTimeFilter;
+
+  @ApiProperty({
+    required: false,
+    type: StringNullableFilter,
+  })
+  @Type(() => StringNullableFilter)
+  @IsOptional()
+  @Field(() => StringNullableFilter, {
+    nullable: true,
+  })
+  description?: StringNullableFilter;
+
   @ApiProperty({
     required: false,
     type: StringFilter,
@@ -27,6 +86,29 @@ class BillWhereInput {
     nullable: true,
   })
   id?: StringFilter;
+
+  @ApiProperty({
+    required: false,
+    type: StringFilter,
+  })
+  @Type(() => StringFilter)
+  @IsOptional()
+  @Field(() => StringFilter, {
+    nullable: true,
+  })
+  name?: StringFilter;
+
+  @ApiProperty({
+    required: false,
+    type: () => NestWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => NestWhereUniqueInput)
+  @IsOptional()
+  @Field(() => NestWhereUniqueInput, {
+    nullable: true,
+  })
+  nestId?: NestWhereUniqueInput;
 }
 
 export { BillWhereInput as BillWhereInput };

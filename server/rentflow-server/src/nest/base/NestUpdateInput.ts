@@ -11,27 +11,31 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
+import { BillUpdateManyWithoutNestsInput } from "./BillUpdateManyWithoutNestsInput";
 import {
-  IsBoolean,
-  IsOptional,
-  IsString,
   ValidateNested,
+  IsOptional,
+  IsBoolean,
+  IsString,
 } from "class-validator";
-import { PropertyWhereUniqueInput } from "../../property/base/PropertyWhereUniqueInput";
 import { Type } from "class-transformer";
+import { PropertyWhereUniqueInput } from "../../property/base/PropertyWhereUniqueInput";
+import { RentUpdateManyWithoutNestsInput } from "./RentUpdateManyWithoutNestsInput";
+import { TenantUpdateManyWithoutNestsInput } from "./TenantUpdateManyWithoutNestsInput";
 
 @InputType()
 class NestUpdateInput {
   @ApiProperty({
     required: false,
-    type: Boolean,
+    type: () => BillUpdateManyWithoutNestsInput,
   })
-  @IsBoolean()
+  @ValidateNested()
+  @Type(() => BillUpdateManyWithoutNestsInput)
   @IsOptional()
-  @Field(() => Boolean, {
+  @Field(() => BillUpdateManyWithoutNestsInput, {
     nullable: true,
   })
-  isOccupied?: boolean | null;
+  bills?: BillUpdateManyWithoutNestsInput;
 
   @ApiProperty({
     required: false,
@@ -42,7 +46,18 @@ class NestUpdateInput {
   @Field(() => Boolean, {
     nullable: true,
   })
-  isUnit?: boolean | null;
+  isOccupied?: boolean;
+
+  @ApiProperty({
+    required: false,
+    type: Boolean,
+  })
+  @IsBoolean()
+  @IsOptional()
+  @Field(() => Boolean, {
+    nullable: true,
+  })
+  isUnit?: boolean;
 
   @ApiProperty({
     required: false,
@@ -53,7 +68,7 @@ class NestUpdateInput {
   @Field(() => String, {
     nullable: true,
   })
-  name?: string | null;
+  name?: string;
 
   @ApiProperty({
     required: false,
@@ -65,7 +80,31 @@ class NestUpdateInput {
   @Field(() => PropertyWhereUniqueInput, {
     nullable: true,
   })
-  propertyId?: PropertyWhereUniqueInput | null;
+  propertyId?: PropertyWhereUniqueInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => RentUpdateManyWithoutNestsInput,
+  })
+  @ValidateNested()
+  @Type(() => RentUpdateManyWithoutNestsInput)
+  @IsOptional()
+  @Field(() => RentUpdateManyWithoutNestsInput, {
+    nullable: true,
+  })
+  rents?: RentUpdateManyWithoutNestsInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => TenantUpdateManyWithoutNestsInput,
+  })
+  @ValidateNested()
+  @Type(() => TenantUpdateManyWithoutNestsInput)
+  @IsOptional()
+  @Field(() => TenantUpdateManyWithoutNestsInput, {
+    nullable: true,
+  })
+  tenants?: TenantUpdateManyWithoutNestsInput;
 }
 
 export { NestUpdateInput as NestUpdateInput };

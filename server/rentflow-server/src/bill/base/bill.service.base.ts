@@ -10,7 +10,7 @@ https://docs.amplication.com/how-to/custom-code
 ------------------------------------------------------------------------------
   */
 import { PrismaService } from "../../prisma/prisma.service";
-import { Prisma, Bill } from "@prisma/client";
+import { Prisma, Bill, Nest } from "@prisma/client";
 
 export class BillServiceBase {
   constructor(protected readonly prisma: PrismaService) {}
@@ -45,5 +45,13 @@ export class BillServiceBase {
     args: Prisma.SelectSubset<T, Prisma.BillDeleteArgs>
   ): Promise<Bill> {
     return this.prisma.bill.delete(args);
+  }
+
+  async getNestId(parentId: string): Promise<Nest | null> {
+    return this.prisma.bill
+      .findUnique({
+        where: { id: parentId },
+      })
+      .nestId();
   }
 }

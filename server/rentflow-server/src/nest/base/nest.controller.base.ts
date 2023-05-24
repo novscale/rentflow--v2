@@ -27,6 +27,15 @@ import { NestWhereUniqueInput } from "./NestWhereUniqueInput";
 import { NestFindManyArgs } from "./NestFindManyArgs";
 import { NestUpdateInput } from "./NestUpdateInput";
 import { Nest } from "./Nest";
+import { BillFindManyArgs } from "../../bill/base/BillFindManyArgs";
+import { Bill } from "../../bill/base/Bill";
+import { BillWhereUniqueInput } from "../../bill/base/BillWhereUniqueInput";
+import { RentFindManyArgs } from "../../rent/base/RentFindManyArgs";
+import { Rent } from "../../rent/base/Rent";
+import { RentWhereUniqueInput } from "../../rent/base/RentWhereUniqueInput";
+import { TenantFindManyArgs } from "../../tenant/base/TenantFindManyArgs";
+import { Tenant } from "../../tenant/base/Tenant";
+import { TenantWhereUniqueInput } from "../../tenant/base/TenantWhereUniqueInput";
 
 @swagger.ApiBearerAuth()
 @common.UseGuards(defaultAuthGuard.DefaultAuthGuard, nestAccessControl.ACGuard)
@@ -51,11 +60,9 @@ export class NestControllerBase {
       data: {
         ...data,
 
-        propertyId: data.propertyId
-          ? {
-              connect: data.propertyId,
-            }
-          : undefined,
+        propertyId: {
+          connect: data.propertyId,
+        },
       },
       select: {
         id: true,
@@ -169,11 +176,9 @@ export class NestControllerBase {
         data: {
           ...data,
 
-          propertyId: data.propertyId
-            ? {
-                connect: data.propertyId,
-              }
-            : undefined,
+          propertyId: {
+            connect: data.propertyId,
+          },
         },
         select: {
           id: true,
@@ -240,5 +245,326 @@ export class NestControllerBase {
       }
       throw error;
     }
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @common.Get("/:id/bills")
+  @ApiNestedQuery(BillFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "Bill",
+    action: "read",
+    possession: "any",
+  })
+  async findManyBills(
+    @common.Req() request: Request,
+    @common.Param() params: NestWhereUniqueInput
+  ): Promise<Bill[]> {
+    const query = plainToClass(BillFindManyArgs, request.query);
+    const results = await this.service.findBills(params.id, {
+      ...query,
+      select: {
+        amount: true,
+        category: true,
+        date: true,
+        description: true,
+        id: true,
+        name: true,
+
+        nestId: {
+          select: {
+            id: true,
+          },
+        },
+
+        updatedAt: true,
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/bills")
+  @nestAccessControl.UseRoles({
+    resource: "Nest",
+    action: "update",
+    possession: "any",
+  })
+  async connectBills(
+    @common.Param() params: NestWhereUniqueInput,
+    @common.Body() body: BillWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      bills: {
+        connect: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/bills")
+  @nestAccessControl.UseRoles({
+    resource: "Nest",
+    action: "update",
+    possession: "any",
+  })
+  async updateBills(
+    @common.Param() params: NestWhereUniqueInput,
+    @common.Body() body: BillWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      bills: {
+        set: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/bills")
+  @nestAccessControl.UseRoles({
+    resource: "Nest",
+    action: "update",
+    possession: "any",
+  })
+  async disconnectBills(
+    @common.Param() params: NestWhereUniqueInput,
+    @common.Body() body: BillWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      bills: {
+        disconnect: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @common.Get("/:id/rents")
+  @ApiNestedQuery(RentFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "Rent",
+    action: "read",
+    possession: "any",
+  })
+  async findManyRents(
+    @common.Req() request: Request,
+    @common.Param() params: NestWhereUniqueInput
+  ): Promise<Rent[]> {
+    const query = plainToClass(RentFindManyArgs, request.query);
+    const results = await this.service.findRents(params.id, {
+      ...query,
+      select: {
+        amount: true,
+        date: true,
+        id: true,
+
+        nestId: {
+          select: {
+            id: true,
+          },
+        },
+
+        tenantId: {
+          select: {
+            id: true,
+          },
+        },
+
+        updatedAt: true,
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/rents")
+  @nestAccessControl.UseRoles({
+    resource: "Nest",
+    action: "update",
+    possession: "any",
+  })
+  async connectRents(
+    @common.Param() params: NestWhereUniqueInput,
+    @common.Body() body: RentWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      rents: {
+        connect: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/rents")
+  @nestAccessControl.UseRoles({
+    resource: "Nest",
+    action: "update",
+    possession: "any",
+  })
+  async updateRents(
+    @common.Param() params: NestWhereUniqueInput,
+    @common.Body() body: RentWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      rents: {
+        set: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/rents")
+  @nestAccessControl.UseRoles({
+    resource: "Nest",
+    action: "update",
+    possession: "any",
+  })
+  async disconnectRents(
+    @common.Param() params: NestWhereUniqueInput,
+    @common.Body() body: RentWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      rents: {
+        disconnect: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @common.Get("/:id/tenants")
+  @ApiNestedQuery(TenantFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "Tenant",
+    action: "read",
+    possession: "any",
+  })
+  async findManyTenants(
+    @common.Req() request: Request,
+    @common.Param() params: NestWhereUniqueInput
+  ): Promise<Tenant[]> {
+    const query = plainToClass(TenantFindManyArgs, request.query);
+    const results = await this.service.findTenants(params.id, {
+      ...query,
+      select: {
+        email: true,
+        firstname: true,
+        id: true,
+        lastname: true,
+
+        nestId: {
+          select: {
+            id: true,
+          },
+        },
+
+        phone: true,
+        sin: true,
+        updatedAt: true,
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/tenants")
+  @nestAccessControl.UseRoles({
+    resource: "Nest",
+    action: "update",
+    possession: "any",
+  })
+  async connectTenants(
+    @common.Param() params: NestWhereUniqueInput,
+    @common.Body() body: TenantWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      tenants: {
+        connect: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/tenants")
+  @nestAccessControl.UseRoles({
+    resource: "Nest",
+    action: "update",
+    possession: "any",
+  })
+  async updateTenants(
+    @common.Param() params: NestWhereUniqueInput,
+    @common.Body() body: TenantWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      tenants: {
+        set: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/tenants")
+  @nestAccessControl.UseRoles({
+    resource: "Nest",
+    action: "update",
+    possession: "any",
+  })
+  async disconnectTenants(
+    @common.Param() params: NestWhereUniqueInput,
+    @common.Body() body: TenantWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      tenants: {
+        disconnect: body,
+      },
+    };
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
   }
 }

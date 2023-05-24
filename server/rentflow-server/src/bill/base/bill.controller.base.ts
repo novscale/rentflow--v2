@@ -48,9 +48,27 @@ export class BillControllerBase {
   })
   async create(@common.Body() data: BillCreateInput): Promise<Bill> {
     return await this.service.create({
-      data: data,
+      data: {
+        ...data,
+
+        nestId: {
+          connect: data.nestId,
+        },
+      },
       select: {
+        amount: true,
+        category: true,
+        date: true,
+        description: true,
         id: true,
+        name: true,
+
+        nestId: {
+          select: {
+            id: true,
+          },
+        },
+
         updatedAt: true,
       },
     });
@@ -73,7 +91,19 @@ export class BillControllerBase {
     return this.service.findMany({
       ...args,
       select: {
+        amount: true,
+        category: true,
+        date: true,
+        description: true,
         id: true,
+        name: true,
+
+        nestId: {
+          select: {
+            id: true,
+          },
+        },
+
         updatedAt: true,
       },
     });
@@ -97,7 +127,19 @@ export class BillControllerBase {
     const result = await this.service.findOne({
       where: params,
       select: {
+        amount: true,
+        category: true,
+        date: true,
+        description: true,
         id: true,
+        name: true,
+
+        nestId: {
+          select: {
+            id: true,
+          },
+        },
+
         updatedAt: true,
       },
     });
@@ -128,9 +170,27 @@ export class BillControllerBase {
     try {
       return await this.service.update({
         where: params,
-        data: data,
+        data: {
+          ...data,
+
+          nestId: {
+            connect: data.nestId,
+          },
+        },
         select: {
+          amount: true,
+          category: true,
+          date: true,
+          description: true,
           id: true,
+          name: true,
+
+          nestId: {
+            select: {
+              id: true,
+            },
+          },
+
           updatedAt: true,
         },
       });
@@ -162,7 +222,19 @@ export class BillControllerBase {
       return await this.service.delete({
         where: params,
         select: {
+          amount: true,
+          category: true,
+          date: true,
+          description: true,
           id: true,
+          name: true,
+
+          nestId: {
+            select: {
+              id: true,
+            },
+          },
+
           updatedAt: true,
         },
       });

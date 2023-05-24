@@ -25,6 +25,12 @@ import { DeleteNestArgs } from "./DeleteNestArgs";
 import { NestFindManyArgs } from "./NestFindManyArgs";
 import { NestFindUniqueArgs } from "./NestFindUniqueArgs";
 import { Nest } from "./Nest";
+import { BillFindManyArgs } from "../../bill/base/BillFindManyArgs";
+import { Bill } from "../../bill/base/Bill";
+import { RentFindManyArgs } from "../../rent/base/RentFindManyArgs";
+import { Rent } from "../../rent/base/Rent";
+import { TenantFindManyArgs } from "../../tenant/base/TenantFindManyArgs";
+import { Tenant } from "../../tenant/base/Tenant";
 import { Property } from "../../property/base/Property";
 import { NestService } from "../nest.service";
 @common.UseGuards(GqlDefaultAuthGuard, gqlACGuard.GqlACGuard)
@@ -93,11 +99,9 @@ export class NestResolverBase {
       data: {
         ...args.data,
 
-        propertyId: args.data.propertyId
-          ? {
-              connect: args.data.propertyId,
-            }
-          : undefined,
+        propertyId: {
+          connect: args.data.propertyId,
+        },
       },
     });
   }
@@ -116,11 +120,9 @@ export class NestResolverBase {
         data: {
           ...args.data,
 
-          propertyId: args.data.propertyId
-            ? {
-                connect: args.data.propertyId,
-              }
-            : undefined,
+          propertyId: {
+            connect: args.data.propertyId,
+          },
         },
       });
     } catch (error) {
@@ -150,6 +152,66 @@ export class NestResolverBase {
       }
       throw error;
     }
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [Bill], { name: "bills" })
+  @nestAccessControl.UseRoles({
+    resource: "Bill",
+    action: "read",
+    possession: "any",
+  })
+  async resolveFieldBills(
+    @graphql.Parent() parent: Nest,
+    @graphql.Args() args: BillFindManyArgs
+  ): Promise<Bill[]> {
+    const results = await this.service.findBills(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [Rent], { name: "rents" })
+  @nestAccessControl.UseRoles({
+    resource: "Rent",
+    action: "read",
+    possession: "any",
+  })
+  async resolveFieldRents(
+    @graphql.Parent() parent: Nest,
+    @graphql.Args() args: RentFindManyArgs
+  ): Promise<Rent[]> {
+    const results = await this.service.findRents(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [Tenant], { name: "tenants" })
+  @nestAccessControl.UseRoles({
+    resource: "Tenant",
+    action: "read",
+    possession: "any",
+  })
+  async resolveFieldTenants(
+    @graphql.Parent() parent: Nest,
+    @graphql.Args() args: TenantFindManyArgs
+  ): Promise<Tenant[]> {
+    const results = await this.service.findTenants(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
   }
 
   @common.UseInterceptors(AclFilterResponseInterceptor)

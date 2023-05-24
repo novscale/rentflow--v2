@@ -19,21 +19,37 @@ import { BillService } from "../bill.service";
 const nonExistingId = "nonExistingId";
 const existingId = "existingId";
 const CREATE_INPUT = {
+  amount: 42.42,
+  date: new Date(),
+  description: "exampleDescription",
   id: "exampleId",
+  name: "exampleName",
   updatedAt: new Date(),
 };
 const CREATE_RESULT = {
+  amount: 42.42,
+  date: new Date(),
+  description: "exampleDescription",
   id: "exampleId",
+  name: "exampleName",
   updatedAt: new Date(),
 };
 const FIND_MANY_RESULT = [
   {
+    amount: 42.42,
+    date: new Date(),
+    description: "exampleDescription",
     id: "exampleId",
+    name: "exampleName",
     updatedAt: new Date(),
   },
 ];
 const FIND_ONE_RESULT = {
+  amount: 42.42,
+  date: new Date(),
+  description: "exampleDescription",
   id: "exampleId",
+  name: "exampleName",
   updatedAt: new Date(),
 };
 
@@ -119,6 +135,7 @@ describe("Bill", () => {
       .expect(HttpStatus.CREATED)
       .expect({
         ...CREATE_RESULT,
+        date: CREATE_RESULT.date.toISOString(),
         updatedAt: CREATE_RESULT.updatedAt.toISOString(),
       });
   });
@@ -130,6 +147,7 @@ describe("Bill", () => {
       .expect([
         {
           ...FIND_MANY_RESULT[0],
+          date: FIND_MANY_RESULT[0].date.toISOString(),
           updatedAt: FIND_MANY_RESULT[0].updatedAt.toISOString(),
         },
       ]);
@@ -152,6 +170,7 @@ describe("Bill", () => {
       .expect(HttpStatus.OK)
       .expect({
         ...FIND_ONE_RESULT,
+        date: FIND_ONE_RESULT.date.toISOString(),
         updatedAt: FIND_ONE_RESULT.updatedAt.toISOString(),
       });
   });
@@ -164,6 +183,7 @@ describe("Bill", () => {
       .expect(HttpStatus.CREATED)
       .expect({
         ...CREATE_RESULT,
+        date: CREATE_RESULT.date.toISOString(),
         updatedAt: CREATE_RESULT.updatedAt.toISOString(),
       })
       .then(function () {
