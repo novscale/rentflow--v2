@@ -145,6 +145,7 @@ type Mutation {
   deleteTenant(where: TenantWhereUniqueInput!): Tenant!
   deleteUser(where: UserWhereUniqueInput!): User!
   login(credentials: Credentials!): UserInfo!
+  signup(credentials: Credentials!): UserInfo!
   updateBill(data: BillUpdateInput!, where: BillWhereUniqueInput!): Bill!
   updateNest(data: NestUpdateInput!, where: NestWhereUniqueInput!): Nest!
   updateProperty(data: PropertyUpdateInput!, where: PropertyWhereUniqueInput!): Property!
@@ -287,6 +288,7 @@ type Query {
   _usersMeta(orderBy: [UserOrderByInput!], skip: Float, take: Float, where: UserWhereInput): MetaQueryPayload!
   bill(where: BillWhereUniqueInput!): Bill
   bills(orderBy: [BillOrderByInput!], skip: Float, take: Float, where: BillWhereInput): [Bill!]!
+  me: User!
   nest(where: NestWhereUniqueInput!): Nest
   nests(orderBy: [NestOrderByInput!], skip: Float, take: Float, where: NestWhereInput): [Nest!]!
   properties(orderBy: [PropertyOrderByInput!], skip: Float, take: Float, where: PropertyWhereInput): [Property!]!
